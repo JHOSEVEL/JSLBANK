@@ -1,4 +1,4 @@
-# 🏦 JSL Bank - Simulador Bancário Digital
+# 🏦 JSL Bank - Laboratorio pessoal Bancário Digital
 
 O **JSL Bank** é uma aplicação completa de simulação de banco digital que combina uma interface web dinâmica de usuário (Frontend) e um serviço de API RESTful (Backend), ambos desenvolvidos em **Python** utilizando o framework **Flask**. 
 
