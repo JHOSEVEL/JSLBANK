@@ -1,0 +1,38 @@
+[
+    {
+        "numero": "3338 6656 4234 3812",
+        "nome_titular": "Ana SILVA",
+        "validade": "06/31",
+        "cvv": "156",
+        "bandeira": "Visa",
+        "limite": 3563,
+        "usuario_id": 1
+    },
+    {
+        "numero": "6539 3718 0070 7778",
+        "nome_titular": "jose SILVA",
+        "validade": "06/31",
+        "cvv": "534",
+        "bandeira": "American Express",
+        "limite": 3138,
+        "usuario_id": 2
+    },
+    {
+        "numero": "5167 1802 2134 6128",
+        "nome_titular": "marcos OLIVEIRA",
+        "validade": "06/31",
+        "cvv": "143",
+        "bandeira": "Mastercard",
+        "limite": 3526,
+        "usuario_id": 3
+    },
+    {
+        "numero": "5016 2730 4780 0370",
+        "nome_titular": "marcos SILVA",
+        "validade": "06/31",
+        "cvv": "583",
+        "bandeira": "Visa",
+        "limite": 7708,
+        "usuario_id": 4
+    }
+]

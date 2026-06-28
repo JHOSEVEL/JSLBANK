@@ -1,0 +1,50 @@
+[
+    {
+        "id": 1,
+        "usuario_id": 1,
+        "tipo": "Pix",
+        "destinatario_nome": "Maria Santos",
+        "valor": 150.0,
+        "data": "25/06/2026"
+    },
+    {
+        "id": 2,
+        "usuario_id": 1,
+        "tipo": "TED",
+        "destinatario_nome": "João Pereira",
+        "valor": 320.5,
+        "data": "20/06/2026"
+    },
+    {
+        "id": 3,
+        "usuario_id": 2,
+        "tipo": "Pix",
+        "destinatario_nome": "Carlos Lima",
+        "valor": 89.9,
+        "data": "26/06/2026"
+    },
+    {
+        "id": 4,
+        "usuario_id": 2,
+        "tipo": "Pix",
+        "destinatario_nome": "Loja Tech",
+        "valor": 450.0,
+        "data": "22/06/2026"
+    },
+    {
+        "id": 5,
+        "usuario_id": 3,
+        "tipo": "TED",
+        "destinatario_nome": "Ana Costa",
+        "valor": 200.0,
+        "data": "24/06/2026"
+    },
+    {
+        "id": 6,
+        "usuario_id": 4,
+        "tipo": "Pix",
+        "destinatario_nome": "jose",
+        "valor": 100.0,
+        "data": "28/06/2026"
+    }
+]

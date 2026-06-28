@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSLBANK - Seu Painel Digital</title>
+    <!-- Tailwind CSS para um visual moderno e limpo -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome para ícones profissionais -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans antialiased">
+
+    <!-- Payload Oculto de Texto que o Script de Voz usará ao carregar a página -->
+    <div id="speech-payload" class="hidden">
+        Olá {{ usuario.nome }} {{ usuario.sobrenome }}. Bem-vindo de volta ao JSLBANK. Seu saldo disponível é de {{ user.saldo }} reais e você possui {{ user.pontos }} pontos acumulados no seu clube.
+    </div>
+
+    <!-- Barra de Navegação Superior -->
+    <nav class="border-b border-slate-900 bg-slate-900/40 backdrop-blur-md sticky top-0 z-50 px-6 py-4">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-cyan-500 text-slate-950 font-black px-2.5 py-1 rounded-lg text-lg tracking-tighter">JSL</div>
+                <h1 class="text-xl font-black text-cyan-400 tracking-wider hidden sm:block">BANK.</h1>
+            </div>
+            <div class="flex items-center gap-6">
+                <div class="text-right hidden sm:block">
+                    <p class="text-xs text-slate-500">Conta Digital</p>
+                    <p class="text-sm font-semibold text-slate-200">{{ usuario.nome }} {{ usuario.sobrenome }}</p>
+                </div>
+                <div class="h-8 w-px bg-slate-800 hidden sm:block"></div>
+                <a href="/logout" class="text-xs bg-slate-900 hover:bg-red-500/20 hover:text-red-400 border border-slate-800 px-3 py-2 rounded-xl transition font-medium flex items-center gap-2">
+                    <i class="fas fa-sign-out-alt"></i> Sair da Conta
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Conteúdo Principal -->
+    <main class="max-w-6xl mx-auto p-4 md:p-8 grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- COLUNA DA ESQUERDA & CENTRAL (Saldo, Ações Rápidas e Extrato) -->
+        <div class="lg:col-span-2 space-y-8">
+            
+            <!-- Card de Saldo e Conta -->
+            <div class="bg-slate-900 border border-slate-800/80 p-6 md:p-8 rounded-3xl shadow-2xl relative overflow-hidden group">
+                <div class="absolute -right-16 -top-16 w-48 h-48 bg-cyan-500/5 rounded-full blur-3xl group-hover:bg-cyan-500/10 transition duration-500"></div>
+                
+                <div class="flex justify-between items-start">
+                    <div>
+                        <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Saldo em Conta Corrente</p>
+                        <h2 class="text-4xl md:text-5xl font-black mt-2 text-slate-100 tracking-tight">
+                            <span class="text-cyan-400 text-2xl font-semibold mr-1">R$</span>{{ "%.2f"|format(user.saldo) }}
+                        </h2>
+                    </div>
+                    <!-- Botão de Acessibilidade por Voz (Speech) -->
+                    <button onclick="falar('Seu saldo disponível é de {{ user.saldo }} reais.')" class="bg-slate-950 border border-slate-800 text-slate-400 hover:text-cyan-400 hover:border-cyan-500/30 p-3 rounded-2xl transition shadow-inner flex items-center justify-center group" title="Ouvir Saldo">
+                        <i class="fas fa-volume-up text-lg group-hover:scale-110 transition"></i>
+                    </button>
+                </div>
+
+                <!-- Seção de Benefícios Internos -->
+                <div class="mt-8 pt-6 border-t border-slate-800/60 flex flex-wrap gap-4 justify-between items-center">
+                    <div class="flex items-center gap-2.5">
+                        <div class="bg-purple-500/10 text-purple-400 p-2 rounded-xl text-xs">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div>
+                            <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Pontos Acumulados</p>
+                            <p class="text-sm font-bold text-purple-300">{{ user.pontos }} Pontos no Club</p>
+                        </div>
+                    </div>
+                    <div class="text-xs text-slate-400 bg-slate-950 border border-slate-800/50 px-3 py-1.5 rounded-lg font-mono">
+                        Agência: <span class="text-slate-200">0001</span> • CC: <span class="text-slate-200">10293-{{ user.id }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Botões de Ações Rápidas -->
+            <div>
+                <h3 class="text-xs font-bold uppercase text-slate-500 tracking-widest mb-4">Ações Disponíveis</h3>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+                    <a href="./transferir" class="bg-slate-900 border border-slate-800 hover:border-cyan-500/40 p-5 rounded-2xl flex flex-col items-center justify-center text-center group transition shadow-xl">
+                        <div class="bg-cyan-500/10 text-cyan-400 p-3 rounded-xl mb-3 group-hover:scale-110 transition">
+                            <i class="fas fa-bolt text-lg"></i>
+                        </div>
+                        <span class="text-xs font-bold text-slate-200">Enviar Pix</span>
+                    </a>
+                    
+                    <a href="./transferir" class="bg-slate-900 border border-slate-800 hover:border-blue-500/40 p-5 rounded-2xl flex flex-col items-center justify-center text-center group transition shadow-xl">
+                        <div class="bg-blue-500/10 text-blue-400 p-3 rounded-xl mb-3 group-hover:scale-110 transition">
+                            <i class="fas fa-university text-lg"></i>
+                        </div>
+                        <span class="text-xs font-bold text-slate-200">Transferência TED </span>
+                    </a>
+
+                    <div class="bg-slate-900/40 border border-slate-900 p-5 rounded-2xl flex flex-col items-center justify-center text-center opacity-40 cursor-not-allowed">
+                        <div class="bg-slate-800 text-slate-500 p-3 rounded-xl mb-3">
+                            <i class="fas fa-barcode text-lg"></i>
+                        </div>
+                        <span class="text-xs font-bold text-slate-500">Pagar Boleto</span>
+                    </div>
+
+                    <div class="bg-slate-900/40 border border-slate-900 p-5 rounded-2xl flex flex-col items-center justify-center text-center opacity-40 cursor-not-allowed">
+                        <div class="bg-slate-800 text-slate-500 p-3 rounded-xl mb-3">
+                            <i class="fas fa-piggy-bank text-lg"></i>
+                        </div>
+                        <span class="text-xs font-bold text-slate-500">Investimentos</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Histórico de Transações (Extrato) -->
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-2xl">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-sm font-bold uppercase text-slate-400 tracking-wider flex items-center gap-2">
+                        <i class="fas fa-list-ul text-cyan-400"></i> Histórico de Transações
+                    </h3>
+                    <span class="text-[11px] bg-slate-950 text-slate-500 px-2 py-1 rounded-md border border-slate-800">Recente</span>
+                </div>
+                
+                <div class="space-y-3 max-h-[320px] overflow-y-auto pr-1">
+                    {% for t in transacoes|reverse %}
+                    <div class="bg-slate-950/60 p-4 rounded-xl border border-slate-900 hover:border-slate-800/80 transition flex justify-between items-center text-sm">
+                        <div class="flex items-center gap-3.5">
+                            <div class="bg-red-500/10 p-2.5 rounded-xl text-red-400 text-xs font-black tracking-tighter">
+                                DEB
+                            </div>
+                            <div>
+                                <p class="font-semibold text-slate-200">Envio de {{ t.tipo }} concluído</p>
+                                <p class="text-xs text-slate-500 mt-0.5">Favorecido: <strong class="text-slate-400">{{ t.destinatario_nome }}</strong> • {{ t.data }}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <strong class="text-red-400 font-bold text-base">- R$ {{ "%.2f"|format(t.valor) }}</strong>
+                        </div>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-10">
+                        <div class="text-slate-700 text-3xl mb-2"><i class="fas fa-folder-open"></i></div>
+                        <p class="text-xs text-slate-500">Nenhuma movimentação financeira registrada nesta conta.</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- COLUNA DA DIREITA (Cartão de Crédito Fictício e Dados Cadastrais) -->
+        <div class="space-y-8">
+            
+            <!-- Título do Bloco Superior -->
+            <div>
+                <h3 class="text-xs font-bold uppercase text-slate-500 tracking-widest mb-4">Seu Cartão Gerado</h3>
+                
+                <!-- Componente Visual Premium do Cartão -->
+                <div class="bg-gradient-to-br from-slate-900 via-slate-900 to-cyan-950 border border-cyan-500/20 p-6 rounded-2xl h-56 flex flex-col justify-between shadow-2xl relative overflow-hidden group">
+                    <!-- Detalhe futurista decorativo no fundo do cartão -->
+                    <div class="absolute -right-6 -bottom-6 w-32 h-32 bg-cyan-500/5 rounded-full blur-2xl group-hover:bg-cyan-500/10 transition"></div>
+                    
+                    <div class="flex justify-between items-center z-10">
+                        <!-- Chip do Cartão Simulado -->
+                        <div class="bg-gradient-to-r from-yellow-600 to-yellow-400 w-11 h-8 rounded-lg shadow-inner opacity-80 relative">
+                            <div class="absolute inset-1 border border-yellow-700/30 rounded grid grid-cols-3 gap-px opacity-40">
+                                <div></div><div></div><div></div><div></div><div></div><div></div>
+                            </div>
+                        </div>
+                        <!-- Bandeira Aleatória do Cartão -->
+                        <span class="text-sm font-black tracking-widest text-cyan-400/80 italic uppercase font-mono">{{ cartao.bandeira }}</span>
+                    </div>
+                    
+                    <!-- Número do Cartão -->
+                    <p class="text-xl md:text-2xl font-mono tracking-widest text-slate-100 z-10 filter drop-shadow">
+                        {{ cartao.numero }}
+                    </p>
+                    
+                    <!-- Rodapé do Cartão com Dados -->
+                    <div class="flex justify-between text-[10px] uppercase text-slate-400 font-mono z-10">
+                        <div class="max-w-[150px]">
+                            <p class="scale-90 origin-left text-slate-500">Titular</p>
+                            <p class="text-xs font-bold text-slate-200 mt-0.5 truncate">{{ cartao.nome_titular }}</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="scale-90 text-slate-500">Validade</p>
+                            <p class="text-xs font-bold text-slate-200 mt-0.5">{{ cartao.validade }}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="scale-90 origin-right text-slate-500">CVV</p>
+                            <p class="text-xs font-bold text-slate-200 mt-0.5">{{ cartao.cvv }}</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Detalhes Extras do Cartão Fictício -->
+                <div class="bg-slate-900/60 border border-slate-900 mt-3 p-4 rounded-xl flex justify-between items-center text-xs text-slate-400">
+                    <span>Limite de Crédito Aprovado:</span>
+                    <strong class="text-emerald-400 font-bold">R$ {{ cartao.limite }},00</strong>
+                </div>
+            </div>
+
+            <!-- Painel de Dados Pessoais de Cadastro -->
+            <div class="bg-slate-900 border border-slate-800 p-6 rounded-3xl shadow-2xl">
+                <h3 class="text-xs font-bold uppercase text-slate-400 tracking-wider mb-4 pb-3 border-b border-slate-800/60">
+                    <i class="fas fa-user-shield text-cyan-500 mr-1.5"></i> Informações do Perfil
+                </h3>
+                <div class="space-y-4 text-xs">
+                    <div>
+                        <span class="text-slate-500 block">E-mail Titular</span>
+                        <span class="text-slate-200 font-medium break-all text-sm">{{ user.email }}</span>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <span class="text-slate-500 block">Telefone</span>
+                            <span class="text-slate-200 font-medium">{{ user.telefone }}</span>
+                        </div>
+                        <div>
+                            <span class="text-slate-500 block">Localidade</span>
+                            <span class="text-slate-200 font-medium truncate block" title="{{ user.cidade }} - {{ user.estado }}">{{ user.cidade }} / {{ user.estado }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- Importação do arquivo de áudio local para processar a voz (Speech) -->
+    <script src="/static/js/speech.js"></script>
+</body>
+</html>

@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abra sua Conta - JSLBANK</title>
+    <!-- Google Fonts: Plus Jakarta Sans -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-deep: #090d16;
+            --bg-card: rgba(30, 41, 59, 0.45);
+            --primary: #3b82f6;
+            --primary-glow: rgba(59, 130, 246, 0.35);
+            --accent-cyan: #06b6d4;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-focus: #3b82f6;
+            --error-bg: rgba(239, 68, 68, 0.15);
+            --error-border: rgba(239, 68, 68, 0.4);
+            --error-text: #fca5a5;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Background glow blobs */
+        .glow-blob {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(120px);
+            z-index: 0;
+            opacity: 0.12;
+            pointer-events: none;
+        }
+
+        .blob-1 {
+            top: -10%;
+            right: 10%;
+            width: 40vw;
+            height: 40vw;
+            background: radial-gradient(circle, var(--accent-cyan) 0%, transparent 80%);
+        }
+
+        .blob-2 {
+            bottom: -10%;
+            left: 10%;
+            width: 40vw;
+            height: 40vw;
+            background: radial-gradient(circle, var(--primary) 0%, transparent 80%);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 580px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header / Logo section */
+        .header-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 24px;
+            font-weight: 800;
+            text-decoration: none;
+            background: linear-gradient(135deg, var(--text-main) 0%, var(--accent-cyan) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+            margin-bottom: 12px;
+        }
+
+        .logo-link svg {
+            transition: transform 0.3s ease;
+        }
+
+        .logo-link:hover svg {
+            transform: rotate(-10deg);
+        }
+
+        .header-logo p {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* Card Form */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            backdrop-filter: blur(16px);
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 3px;
+            background: linear-gradient(to right, var(--accent-cyan), var(--primary));
+        }
+
+        .card h2 {
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            letter-spacing: -0.5px;
+        }
+
+        .card-subtitle {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 30px;
+        }
+
+        /* Form Layout */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+        }
+
+        .col-span-2 {
+            grid-column: span 2;
+        }
+
+        .col-state {
+            grid-column: span 1;
+        }
+
+        .col-city {
+            grid-column: span 1;
+        }
+
+        /* Form Elements */
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-main);
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 12px 16px;
+            color: var(--text-main);
+            font-family: inherit;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: var(--border-focus);
+            box-shadow: 0 0 0 3px var(--primary-glow);
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.2);
+        }
+
+        /* Error Banner - Hidden by default */
+        .error-banner {
+            display: none; /* Oculto por padrão */
+            align-items: flex-start;
+            gap: 12px;
+            background: var(--error-bg);
+            border: 1px solid var(--error-border);
+            color: var(--error-text);
+            padding: 14px 18px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            font-size: 13.5px;
+            line-height: 1.5;
+            animation: slideDown 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .error-banner svg {
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        /* Submit Button */
+        .btn-submit {
+            grid-column: span 2;
+            margin-top: 10px;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--primary) 0%, #1d4ed8 100%);
+            border: none;
+            color: white;
+            font-family: inherit;
+            font-weight: 700;
+            font-size: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px var(--primary-glow);
+            transition: all 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--primary-glow);
+            filter: brightness(1.1);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .footer-links {
+            text-align: center;
+            margin-top: 24px;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        .footer-links a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-cyan);
+            text-decoration: underline;
+        }
+
+        /* Animations */
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Responsive */
+        @media (max-width: 580px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .col-span-2, .col-state, .col-city, .btn-submit {
+                grid-column: span 1;
+            }
+            .card {
+                padding: 24px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Blobs -->
+    <div class="glow-blob blob-1"></div>
+    <div class="glow-blob blob-2"></div>
+
+    <div class="container">
+        <!-- Logo Header -->
+        <div class="header-logo">
+            <a href="/" class="logo-link">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2L2 7L12 12L22 7L12 2Z" fill="url(#logoGrad)" />
+                    <path d="M2 17L12 22L22 17" stroke="url(#logoGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    <path d="M2 12L12 17L22 12" stroke="url(#logoGrad)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                    <defs>
+                        <linearGradient id="logoGrad" x1="2" y1="2" x2="22" y2="22" gradientUnits="userSpaceOnUse">
+                            <stop stop-color="#06b6d4" />
+                            <stop offset="0.5" stop-color="#3b82f6" />
+                            <stop offset="1" stop-color="#8b5cf6" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                JSLBANK
+            </a>
+            <p>Sua jornada para uma vida financeira inteligente começa aqui.</p>
+        </div>
+
+        <!-- Form Card -->
+        <div class="card">
+            <h2>Abra sua Conta</h2>
+            <p class="card-subtitle">Insira suas informações abaixo para criar sua conta digital e gerar seu cartão.</p>
+
+
+            <div id="error-container" class="error-banner" {% if messages %}style="display: flex;"{% endif %}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+               
+            </div>
+
+            <form method="POST" id="cadastro-form" action="{{ url_for('cadastro') }}">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="nome">Nome</label>
+                        <input type="text" id="nome" name="nome" placeholder="Ana" required autocomplete="given-name">
+                    </div>
+                    <div class="form-group">
+                        <label for="sobrenome">Sobrenome</label>
+                        <input type="text" id="sobrenome" name="sobrenome" placeholder="Silva" required autocomplete="family-name">
+                    </div>
+                    <div class="form-group col-span-2">
+                        <label for="email">E-mail Corporativo ou Pessoal</label>
+                        <input type="email" id="email" name="email" placeholder="ana.silva@exemplo.com" required autocomplete="email">
+                    </div>
+                    <div class="form-group col-span-2">
+                        <label for="telefone">Telefone / Celular</label>
+                        <input type="tel" id="telefone" name="telefone" placeholder="(11) 99999-9999" required autocomplete="tel">
+                    </div>
+                    <div class="form-group col-city">
+                        <label for="cidade">Cidade</label>
+                        <input type="text" id="cidade" name="cidade" placeholder="São Paulo" required autocomplete="address-level2">
+                    </div>
+                    <div class="form-group col-state">
+                        <label for="estado">Estado</label>
+                        <input type="text" id="estado" name="estado" placeholder="SP" required autocomplete="address-level1" maxlength="2">
+                    </div>
+                    <div class="form-group">
+                        <label for="senha">Senha de Acesso</label>
+                        <input type="password" id="senha" name="senha" placeholder="••••••••" required autocomplete="new-password">
+                    </div>
+                    <div class="form-group">
+                        <label for="confirmar_senha">Confirmar Senha</label>
+                        <input type="password" id="confirmar_senha" name="confirmar_senha" placeholder="••••••••" required autocomplete="new-password">
+                    </div>
+
+                    <button type="submit" class="btn-submit" href="./login.html">
+                        Cadastrar e Criar Cartão 
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <div class="footer-links">
+            Já possui uma conta? <a href="{{ url_for('login') }}">Fazer Login</a>
+        </div>
+    </div>
+
+    <!-- Client-side Validation Script -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const form = document.getElementById('cadastro-form');
+            const errorContainer = document.getElementById('error-container');
+            const errorText = document.getElementById('error-text');
+
+            form.addEventListener('submit', (e) => {
+                // Limpa erros anteriores
+                errorContainer.style.display = 'none';
+                errorText.innerHTML = '';
+
+                const nome = document.getElementById('nome').value.trim();
+                const sobrenome = document.getElementById('sobrenome').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const telefone = document.getElementById('telefone').value.trim();
+                const cidade = document.getElementById('cidade').value.trim();
+                const estado = document.getElementById('estado').value.trim();
+                const senha = document.getElementById('senha').value;
+                const confirmarSenha = document.getElementById('confirmar_senha').value;
+
+                let errors = [];
+
+                // 1. Validação de senha vazia ou tamanho mínimo
+                if (senha.length < 4) {
+                    errors.push('A senha deve ter pelo menos 4 caracteres.');
+                }
+
+                // 2. Validação se as senhas coincidem
+                if (senha !== confirmarSenha) {
+                    errors.push('As senhas digitadas não coincidem.');
+                }
+
+                // Se houver erros, impede o envio e exibe a mensagem
+                if (errors.length > 0) {
+                    e.preventDefault();
+                    errorText.innerHTML = errors.join('<br>');
+                    errorContainer.style.display = 'flex';
+                    errorContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            });
+
+            // Oculta a mensagem de erro ao começar a corrigir os campos de senha
+            const senhaInput = document.getElementById('senha');
+            const confirmarSenhaInput = document.getElementById('confirmar_senha');
+
+            const clearErrorsOnInput = () => {
+                if (errorContainer.style.display === 'flex') {
+                    // Só esconde se o erro for de senha incompatível
+                    if (errorText.innerHTML.includes('coincidem') || errorText.innerHTML.includes('caracteres')) {
+                        errorContainer.style.display = 'none';
+                        errorText.innerHTML = '';
+                    }
+                }
+            };
+
+            senhaInput.addEventListener('input', clearErrorsOnInput);
+            confirmarSenhaInput.addEventListener('input', clearErrorsOnInput);
+        });
+    </script>
+</body>
+</html>
